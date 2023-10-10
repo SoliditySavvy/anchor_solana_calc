@@ -34,13 +34,18 @@ pub mod on_chain_calculator {
     }
     /// Update Operand Y
     pub fn update_y(ctx: Context<ChangeInternalState>, new_y: i64) -> Result<()> {
-        // TODO
-        todo!()
+        let calculator = &mut ctx.accounts.calculator;
+        calculator.y = new_y;
+        Ok(())
     }
     // TODO: Implement the `update_authority` function in the same manner as the update functions above.
 
     // HINT - function declaration can look like:
-    // pub fn update_authority(ctx: Context<ChangeInternalState>, new_authority: Pubkey) -> Result<()> {}
+    pub fn update_authority(ctx: Context<ChangeInternalState>, new_authority: Pubkey) -> Result<()> {
+        let calculator = &mut ctx.accounts.calculator;
+        calculator.update_authority = new_authority;
+        Ok(())
+    }
 
     /// This function reads data from the Calculator Account and
     /// performs an addition operation. The result, as well as the operands,
@@ -49,30 +54,75 @@ pub mod on_chain_calculator {
     pub fn addition(ctx: Context<Compute>) -> Result<()> {
         let calculator = &ctx.accounts.calculator;
 
-        // TODO
-        let operand_x: i64 = todo!();
-        // TODO
-        let operand_y: i64 = todo!();
+        let operand_x: i64 = calculator.x;
+        let operand_y: i64 = calculator.y;
+        let result: Option<i64> = calculator.addition();
 
-        // TODO
-        let result: Option<i64> = todo!();
-
-        // The code below will emit operands with the result into logs.
-        // We then subscribe to the logs inside tests to verify if the Calculator works correctly.
         emit!(CalculatorEvent {
             x: operand_x,
             y: operand_y,
             result,
-            // Don`t forget to update this in other functions
+
             op: Operation::Addition,
         });
         Ok(())
     }
-    // TODO: Implement other Calculator functions in the same manner as the addition function above.
-    // To pass tests, use function names as follows:
-    // - `subtraction`
-    // - `multiplication`
-    // - `division`
+
+    // subscribe 
+    pub fn subtraction(ctx: Context<Compute>) -> Result<()> {
+        let calculator = &ctx.accounts.calculator;
+
+        let operand_x: i64 = calculator.x;
+        let operand_y: i64 = calculator.y;
+        let result: Option<i64> = calculator.subtraction();
+
+        emit!(CalculatorEvent {
+            x: operand_x,
+            y: operand_y,
+            result,
+
+            op: Operation::Subtraction,
+        });
+        Ok(())
+    }
+
+    // multiplication 
+    pub fn multiplication(ctx: Context<Compute>) -> Result<()> {
+        let calculator = &ctx.accounts.calculator;
+
+        let operand_x: i64 = calculator.x;
+        let operand_y: i64 = calculator.y;
+        let result: Option<i64> = calculator.multiplication();
+
+        emit!(CalculatorEvent {
+            x: operand_x,
+            y: operand_y,
+            result,
+
+            op: Operation::Multiplication,
+        });
+        Ok(())
+    }
+
+    // division 
+    pub fn division(ctx: Context<Compute>) -> Result<()> {
+        let calculator = &ctx.accounts.calculator;
+
+        let operand_x: i64 = calculator.x;
+        let operand_y: i64 = calculator.y;
+        let result: Option<i64> = calculator.division();
+
+        emit!(CalculatorEvent {
+            x: operand_x,
+            y: operand_y,
+            result,
+
+            op: Operation::Division,
+        });
+        Ok(())
+    }
+
+
 
     // ------------------------------------------------------------------------------------------------
 }
