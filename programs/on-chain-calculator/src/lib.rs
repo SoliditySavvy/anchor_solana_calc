@@ -1,8 +1,3 @@
-// The task is to add code everywhere where you find // TODO.or todo!()
-// You have to finish the implementation of methods of on-chain Calculator.
-// Once you complete the TODOs, make sure that you delete all `todo!()` macros and
-// you can try to run the tests using `anchor test` command and start debugging ;-)
-
 use anchor_lang::prelude::*;
 
 declare_id!("8kCVvW4147A2CrhW2Dr4ety2PJ2ds7oUavRNCVtBeew6");
@@ -11,8 +6,6 @@ declare_id!("8kCVvW4147A2CrhW2Dr4ety2PJ2ds7oUavRNCVtBeew6");
 pub mod on_chain_calculator {
     use super::*;
     // ------------------------------------------------------------------------------------------------
-    // Functions
-    // TESTING
     //
     /// Initialize the Calculator with the corresponding operands and the corresponding update authority.
     /// Update authority is important to ensure that only privileged persons can modify calculator data.
@@ -42,7 +35,10 @@ pub mod on_chain_calculator {
     // TODO: Implement the `update_authority` function in the same manner as the update functions above.
 
     // HINT - function declaration can look like:
-    pub fn update_authority(ctx: Context<ChangeInternalState>, new_authority: Pubkey) -> Result<()> {
+    pub fn update_authority(
+        ctx: Context<ChangeInternalState>,
+        new_authority: Pubkey,
+    ) -> Result<()> {
         let calculator = &mut ctx.accounts.calculator;
         calculator.update_authority = new_authority;
         Ok(())
@@ -69,7 +65,7 @@ pub mod on_chain_calculator {
         Ok(())
     }
 
-    // subscribe 
+    // subscribe
     pub fn subtraction(ctx: Context<Compute>) -> Result<()> {
         let calculator = &ctx.accounts.calculator;
 
@@ -87,7 +83,7 @@ pub mod on_chain_calculator {
         Ok(())
     }
 
-    // multiplication 
+    // multiplication
     pub fn multiplication(ctx: Context<Compute>) -> Result<()> {
         let calculator = &ctx.accounts.calculator;
 
@@ -105,7 +101,7 @@ pub mod on_chain_calculator {
         Ok(())
     }
 
-    // division 
+    // division
     pub fn division(ctx: Context<Compute>) -> Result<()> {
         let calculator = &ctx.accounts.calculator;
 
@@ -123,20 +119,9 @@ pub mod on_chain_calculator {
         Ok(())
     }
 
-
-
     // ------------------------------------------------------------------------------------------------
 }
 
-// ------------------------------------------------------------------------------------------------
-// Contexts
-//
-// In order to specify which accounts (read or write) the program expects, we use Contexts. Each Context is
-// a predefined struct that can be used within function declarations. This ensures that, for example,
-// the `init_calculator` function expects accounts as defined inside the InitializeCalculator Context.
-// Furthermore, the Anchor framework allows us to define additional information about the accounts inside the Context.
-// For example, if we want to modify account data, we mark it as (mut). If we want to initialize the account,
-// we mark it with `init` (using `init`, the account is automatically mutable), and much more.
 #[derive(Accounts)]
 pub struct InitializeCalculator<'info> {
     #[account(mut)]
@@ -154,9 +139,6 @@ pub struct InitializeCalculator<'info> {
 #[derive(Accounts)]
 pub struct ChangeInternalState<'info> {
     pub update_authority: Signer<'info>,
-    // Using the 'has_one' constraint, we can verify that the authority
-    // corresponds to the authority that was initialized
-    // and eventually saved within the Calculator data within `init_calculator` function
     #[account(mut,
         has_one = update_authority @ CalculatorError::WrongPrivileges
     )]
